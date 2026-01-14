@@ -43,6 +43,7 @@ jobs:
 
     # Hello from AWS: WhoAmI
     - name: Verify AWS Identity
+      if: github.event_name == 'push'
       run: |
         aws sts get-caller-identity    
 
