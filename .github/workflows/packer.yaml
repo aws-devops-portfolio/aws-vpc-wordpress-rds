@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sanity check EC2 permissions
+        working-directory: .
         run: |
           aws sts get-caller-identity
           aws ec2 describe-regions --region us-east-1
