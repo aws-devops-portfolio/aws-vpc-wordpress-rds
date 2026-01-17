@@ -2,6 +2,10 @@ data "aws_ssm_parameter" "wordpress_ami" {
   name = "/ami/wordpress/latest"
 }
 
+locals {
+  ami_id = replace(data.aws_ssm_parameter.wordpress_ami.value, "ami:", "")
+}
+
 module "vpc" {
     source = "./modules/vpc"
     vpc_cidr = var.vpc_cidr
