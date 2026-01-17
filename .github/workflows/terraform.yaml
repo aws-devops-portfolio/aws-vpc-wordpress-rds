@@ -6,32 +6,60 @@ permissions:
 
 on:
   pull_request:
-    paths: 
+    paths:
       - 'terraform/**'
   push:
     branches:
       - main
     paths:
-      - 'terraform/**'  
+      - 'terraform/**'
 
 defaults:
   run:
     working-directory: terraform
 
+env:
+  AWS_REGION: us-east-1
+  TF_VERSION: 1.6.0
+  TFLINT_VERSION: 0.60.0
+  TFSEC_VERSION: 1.28.1
+
 jobs:
-  terraform:
-    name: 'Terraform Lint, Security Check, and Deploy'
+
+  terraform-pr:
+    name: Terraform Checks (PR)
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
-    env:
-      AWS_REGION: 'us-east-1'
-      TF_VERSION: '1.6.0'
-      TFLINT_VERSION: '0.60.0'
-      TFSEC_VERSION: '1.28.1' 
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - run: terraform fmt -check -recursive
+      - run: terraform validate
+
+      - run: |
+          curl -sLo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
+          unzip tflint.zip -d /usr/local/bin/
+          tflint --init
+          tflint
+
+      - run: |
+          curl -sLo tfsec https://github.com/aquasecurity/tfsec/releases/download/v${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
+          chmod +x tfsec
+          mv tfsec /usr/local/bin/
+          tfsec .
+
+  terraform-main:
+    name: Terraform Deploy (Main)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
 
     steps:
-    - name: 'Checkout GitHub repository'
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
     - name: 'Configure AWS credentials'
       uses: aws-actions/configure-aws-credentials@v4

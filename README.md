@@ -24,3 +24,10 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 - Designed a highly available, secure VPC  
 - Automated EC2 + RDS provisioning  
 - Configured WordPress with RDS backend
+- Created a customized machine image using Packer
+- Integrated AWS OIDC Authentication with Github actions
+
+## Challenges experienced
+1. Issue: Could not assume role with OIDC: Not authorized to perform sts:AssumeRoleWithWebIdentity
+   Solution: Diagnosed and fixed a GitHub Actions → AWS OIDC authentication failure by inspecting JWT claims and correcting IAM trust policy conditions.
+  
