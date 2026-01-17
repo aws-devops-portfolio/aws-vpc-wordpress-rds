@@ -37,7 +37,7 @@ build {
         aws ssm put-parameter \
         --name /ami/wordpress/latest \
         --type String \
-        --value {{ replace (index .Builds 0).ArtifactId "ami:" "" -1 }} \
+        --value {{ replace .ArtifactId "ami:" "" -1 }} \
         --overwrite
       EOF
     ]
