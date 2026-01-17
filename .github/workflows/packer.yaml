@@ -11,17 +11,20 @@ defaults:
   run:
     working-directory: packer
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   packer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::889049355474:role/GitHubAction-Role 
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Install Packer
         run: |
