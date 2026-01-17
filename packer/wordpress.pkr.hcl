@@ -34,10 +34,10 @@ build {
 
 post-processor "shell-local" {
   inline = [
-    "aws ssm put-parameter \
-      --name /ami/wordpress/latest \
-      --type String \
-      --value {{ .Builds[0].ArtifactId | split \":\" | last }} \
+    "aws ssm put-parameter \n
+      --name /ami/wordpress/latest \n
+      --type String \n
+      --value {{ .Builds[0].ArtifactId | split \":\" | last }} \n
       --overwrite"
   ]
 }
