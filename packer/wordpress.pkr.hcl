@@ -37,7 +37,7 @@ build {
         aws ssm put-parameter \
         --name /ami/wordpress/latest \
         --type String \
-        --value {{ (index .Builds 0).ArtifactId  | split ":" | last }} \
+        --value {{ index (split ":" (index .Builds 0).ArtifactId) 1 }} \
         --overwrite
       EOF
     ]
