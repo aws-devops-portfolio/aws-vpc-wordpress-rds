@@ -1,7 +1,17 @@
 #!/bin/bash
 set -e
 
-exec > >(tee /var/log/packer.log) 2>&1
+# exec > >(tee /var/log/packer.log) 2>&1
+
+set -euxo pipefail
+
+echo "===== OS INFO ====="
+lsb_release -a || cat /etc/os-release
+uname -a
+
+echo "===== APT SOURCES ====="
+cat /etc/apt/sources.list
+ls /etc/apt/sources.list.d || true
 
 # Ensure universe repo is enabled
 apt-get install -y software-properties-common
