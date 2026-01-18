@@ -3,9 +3,21 @@ set -e
 
 exec > >(tee /var/log/packer.log) 2>&1
 
+# Ensure universe repo is enabled
+apt-get install -y software-properties-common
+add-apt-repository universe
 apt-get update -y
-apt-get install -y apache2 php php-mysqlnd wget unzip curl jq
 
+# Install Apache + PHP (Jammy defaults)
+apt-get install -y \
+  apache2 \
+  php \
+  php-mysql \
+  wget \
+  unzip \
+  curl \
+  jq
+  
 systemctl enable apache2
 systemctl start apache2
 
