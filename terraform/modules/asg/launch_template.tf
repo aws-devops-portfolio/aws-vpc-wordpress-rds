@@ -26,7 +26,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix   = "wordpress-lt-"
   image_id      = var.ami_id
-  instance_type = var.instance_type
+  instance_type = var.instance_type  
 
   key_name = var.key_pair_name
 
@@ -35,6 +35,13 @@ resource "aws_launch_template" "wordpress_lt" {
   }
 
   vpc_security_group_ids = [var.ec2_sg_id]
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags      = "enabled"
+  }
 
   user_data = base64encode(
     templatefile("${path.module}/userdata.sh", {

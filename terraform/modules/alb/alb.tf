@@ -1,9 +1,12 @@
 
+# Public ALB is required for Wordpress frontend access
+#tfsec:ignore:aws-elb-alb-not-public
 resource "aws_lb" "web_alb" {
-  name               = "wordpress-alb"
-  load_balancer_type = "application"
-  security_groups    = [var.alb_sg_id]
-  subnets            = var.public_subnet_ids
+  name                       = "wordpress-alb"
+  load_balancer_type         = "application"
+  security_groups            = [var.alb_sg_id]
+  subnets                    = var.public_subnet_ids
+  drop_invalid_header_fields = true
 }
 
 resource "aws_lb_target_group" "web_lb_tg" {
@@ -26,7 +29,7 @@ resource "aws_lb_target_group" "web_lb_tg" {
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.web_alb.arn
   port              = var.tg_port
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
 
   default_action {
     type             = "forward"

@@ -1,4 +1,6 @@
 # VPC
+# Disabling VPC flow logs due to cost constraints
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -33,7 +35,7 @@ resource "aws_subnet" "public-subnet" {
 
   availability_zone = local.selected_azs[count.index % length(local.selected_azs)]
 
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "public-subnet-${count.index + 1}"
