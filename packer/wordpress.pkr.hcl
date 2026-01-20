@@ -32,14 +32,10 @@ build {
   }
 
   post-processor "shell-local" {
+    interpreter = ["/bin/bash", "-c"]
+
     inline = [
-      <<-EOF
-        aws ssm put-parameter \
-        --name /ami/wordpress/latest \
-        --type String \
-        --value {{ .ArtifactId }} \
-        --overwrite
-      EOF
+      "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$(echo '{{ .ArtifactId }}' | cut -d':' -f2)\" --overwrite"      
     ]
   }
 }
