@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "ec2_https_egress" {
   cidr_blocks       = [var.all_traffic]
   from_port         = var.https_port
   protocol          = "tcp"
-  to_port           = var.https_port  
+  to_port           = var.https_port
 }
 
 resource "aws_security_group" "rds_sg" {
