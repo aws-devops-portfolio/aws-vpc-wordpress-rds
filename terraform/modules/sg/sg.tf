@@ -72,6 +72,17 @@ resource "aws_security_group_rule" "ec2_sg_https_rule" {
   to_port                  = var.https_port
 }
 
+# tfsec:ignore:aws-ec2-no-public-egress-sgr
+resource "aws_security_group_rule" "ec2_https_egress" {
+  description       = "Allow EC2 outbound HTTPS (via NAT)"
+  type              = "egress"
+  security_group_id = aws_security_group.ec2_sg.id
+  cidr_blocks       = [var.all_traffic]
+  from_port         = var.https_port
+  protocol          = "tcp"
+  to_port           = var.https_port  
+}
+
 resource "aws_security_group" "rds_sg" {
   name        = "rds_sg"
   description = "Allows application to access the RDS instances"
