@@ -9,6 +9,10 @@ echo "===== OS INFO ====="
 lsb_release -a || cat /etc/os-release
 uname -a
 
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
 echo "===== APT SOURCES ====="
 cat /etc/apt/sources.list
 ls /etc/apt/sources.list.d || true
@@ -20,6 +24,7 @@ apt-get update -y
 
 # Install Apache + PHP (Jammy defaults)
 apt-get install -y \
+  software-properties-common \
   apache2 \
   php \
   php-mysql \
