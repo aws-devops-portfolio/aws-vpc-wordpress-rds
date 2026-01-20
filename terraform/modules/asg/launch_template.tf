@@ -25,7 +25,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 
 resource "aws_launch_template" "wordpress_lt" {
   name_prefix   = "wordpress-lt-"
-  image_id      = var.wordpress_ami_id
+  image_id      = var.ami_id
   instance_type = var.instance_type
 
   key_name = var.key_pair_name

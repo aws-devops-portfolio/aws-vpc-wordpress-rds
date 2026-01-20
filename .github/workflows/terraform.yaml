@@ -6,13 +6,13 @@ permissions:
 
 on:
   pull_request:
-  #  paths:
-  #    - 'terraform/**'
+    paths:
+      - 'terraform/**'
   push:
     branches:
       - main
-  #  paths:
-  #    - 'terraform/**'
+    paths:
+      - 'terraform/**'
 
 defaults:
   run:

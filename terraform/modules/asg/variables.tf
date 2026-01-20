@@ -1,4 +1,4 @@
-variable "wordpress_ami_id" {
+variable "ami_id" {
   type        = string
   description = "Wordpress AMI id"
 }

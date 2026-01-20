@@ -24,7 +24,7 @@ module "rds" {
 
 module "asg" {
   source               = "./modules/asg"
-  wordpress_ami_id     = data.aws_ssm_parameter.wordpress_ami.value
+  ami_id               = local.ami_id
   ec2_sg_id            = module.sg.ec2_sg_id
   instance_type        = var.instance_type
   private_subnet_ids   = module.vpc.private_subnet_ids
