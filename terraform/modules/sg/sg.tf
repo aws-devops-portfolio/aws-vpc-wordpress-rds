@@ -83,7 +83,7 @@ resource "aws_security_group" "rds_sg" {
 }
 
 resource "aws_security_group_rule" "rds_sg_ingress_rule" {
-  description              =  "RDS security group ingress rule"
+  description              = "RDS security group ingress rule"
   type                     = "ingress"
   security_group_id        = aws_security_group.rds_sg.id
   source_security_group_id = aws_security_group.ec2_sg.id
