@@ -1,5 +1,9 @@
 name: Build WordPress AMI
 
+permissions:
+  id-token: write
+  contents: read
+  
 on:
   push:
     branches:
@@ -17,7 +21,7 @@ env:
 jobs:
   packer:
     runs-on: ubuntu-latest
-    steps:
+    steps:      
       - uses: actions/checkout@v4
 
       - uses: aws-actions/configure-aws-credentials@v4
@@ -26,10 +30,16 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Install Packer
+      - name: Sanity check EC2 permissions
+        working-directory: .
         run: |
-          sudo apt-get update
-          sudo apt-get install -y packer
+          aws sts get-caller-identity
+          aws ec2 describe-regions --region us-east-1
+
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@v3
+        with:
+          version: "1.10.0"
 
       - name: Build AMI
         working-directory: packer

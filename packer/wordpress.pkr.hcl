@@ -30,14 +30,10 @@ build {
     script = "setup.sh"
     execute_command  = "sudo -E bash '{{ .Path }}'"
   }
-}
 
-post-processor "shell-local" {
-  inline = [
-    "aws ssm put-parameter \
-      --name /ami/wordpress/latest \
-      --type String \
-      --value {{ .Builds[0].ArtifactId | split \":\" | last }} \
-      --overwrite"
-  ]
+  post-processor "shell-local" {
+    inline = [
+      "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$(echo '{{ .ArtifactId }}' | cut -d':' -f2)\" --overwrite"      
+    ]
+  }
 }
