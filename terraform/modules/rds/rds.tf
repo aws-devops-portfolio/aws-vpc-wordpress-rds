@@ -11,7 +11,7 @@ resource "aws_db_subnet_group" "rds_subnet_grp" {
 resource "aws_db_instance" "db_instance" {
   allocated_storage           = 10
   db_name                     = "wordpressdb"
-  identifier                  = "wordpress-db-instance" 
+  identifier                  = "wordpress-db-instance"
   engine                      = "mysql"
   engine_version              = "8.0"
   instance_class              = "db.t3.micro"

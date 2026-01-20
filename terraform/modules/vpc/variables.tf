@@ -3,11 +3,11 @@ variable "vpc_cidr" {
 }
 
 variable "az_count" {
-  type = number
+  type    = number
   default = 2
 }
 
 variable "private_subnet_count" {
-  type = number
+  type    = number
   default = 4
 }

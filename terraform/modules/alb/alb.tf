@@ -1,9 +1,9 @@
 
 resource "aws_lb" "web_alb" {
-  name = "wordpress-alb"
+  name               = "wordpress-alb"
   load_balancer_type = "application"
-  security_groups = [var.alb_sg_id]
-  subnets = var.public_subnet_ids
+  security_groups    = [var.alb_sg_id]
+  subnets            = var.public_subnet_ids
 }
 
 resource "aws_lb_target_group" "web_lb_tg" {
@@ -15,11 +15,11 @@ resource "aws_lb_target_group" "web_lb_tg" {
   target_type = "instance"
 
   health_check {
-    path = var.health_check_path
-    healthy_threshold = var.healthy_threshold
+    path                = var.health_check_path
+    healthy_threshold   = var.healthy_threshold
     unhealthy_threshold = var.unhealthy_threshold
-    interval = var.interval
-    timeout = var.timeout
+    interval            = var.interval
+    timeout             = var.timeout
   }
 }
 

@@ -3,5 +3,5 @@ output "alb_url" {
 }
 
 output "alb_target_group_arn" {
-  value = aws_lb_target_group.web_lb_tg.arn 
+  value = aws_lb_target_group.web_lb_tg.arn
 }

@@ -13,8 +13,8 @@ resource "aws_security_group_rule" "alb_sg_http_rule" {
   security_group_id = aws_security_group.alb_sg.id
   cidr_blocks       = [var.all_traffic]
   from_port         = var.http_port
-  protocol          = "tcp" 
-  to_port           = var.http_port 
+  protocol          = "tcp"
+  to_port           = var.http_port
 }
 
 resource "aws_security_group_rule" "alb_sg_https_rule" {
@@ -22,8 +22,8 @@ resource "aws_security_group_rule" "alb_sg_https_rule" {
   security_group_id = aws_security_group.alb_sg.id
   cidr_blocks       = [var.all_traffic]
   from_port         = var.https_port
-  protocol          = "tcp" 
-  to_port           = var.https_port 
+  protocol          = "tcp"
+  to_port           = var.https_port
 }
 
 resource "aws_security_group_rule" "alb_sg_egress_rule" {
@@ -31,8 +31,8 @@ resource "aws_security_group_rule" "alb_sg_egress_rule" {
   security_group_id = aws_security_group.alb_sg.id
   cidr_blocks       = [var.all_traffic]
   from_port         = 0
-  protocol          = "-1" 
-  to_port           = 0 
+  protocol          = "-1"
+  to_port           = 0
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -55,21 +55,21 @@ resource "aws_security_group_rule" "ec2_sg_ssh_rule" {
 }
 
 resource "aws_security_group_rule" "ec2_sg_http_rule" {
-  type                       = "ingress"
-  security_group_id          = aws_security_group.ec2_sg.id
-  source_security_group_id   = aws_security_group.alb_sg.id         
-  from_port                  = var.http_port
-  protocol                   = "tcp"
-  to_port                    = var.http_port
+  type                     = "ingress"
+  security_group_id        = aws_security_group.ec2_sg.id
+  source_security_group_id = aws_security_group.alb_sg.id
+  from_port                = var.http_port
+  protocol                 = "tcp"
+  to_port                  = var.http_port
 }
 
 resource "aws_security_group_rule" "ec2_sg_https_rule" {
-  type                       = "ingress"
-  security_group_id          = aws_security_group.ec2_sg.id
-  source_security_group_id   = aws_security_group.alb_sg.id         
-  from_port                  = var.https_port
-  protocol                   = "tcp"
-  to_port                    = var.https_port
+  type                     = "ingress"
+  security_group_id        = aws_security_group.ec2_sg.id
+  source_security_group_id = aws_security_group.alb_sg.id
+  from_port                = var.https_port
+  protocol                 = "tcp"
+  to_port                  = var.https_port
 }
 
 resource "aws_security_group_rule" "ec2_sg_egress_rule" {
@@ -77,7 +77,7 @@ resource "aws_security_group_rule" "ec2_sg_egress_rule" {
   security_group_id = aws_security_group.ec2_sg.id
   cidr_blocks       = [var.all_traffic]
   from_port         = 0
-  protocol          = "-1" 
+  protocol          = "-1"
   to_port           = 0
 }
 
@@ -92,12 +92,12 @@ resource "aws_security_group" "rds_sg" {
 }
 
 resource "aws_security_group_rule" "rds_sg_https_rule" {
-  type                            = "ingress"
-  security_group_id               = aws_security_group.rds_sg.id
-  source_security_group_id        = aws_security_group.ec2_sg.id
-  from_port                       = var.rds_port
-    protocol                     = "tcp"
-  to_port                         = var.rds_port
+  type                     = "ingress"
+  security_group_id        = aws_security_group.rds_sg.id
+  source_security_group_id = aws_security_group.ec2_sg.id
+  from_port                = var.rds_port
+  protocol                 = "tcp"
+  to_port                  = var.rds_port
 }
 
 resource "aws_security_group_rule" "rds_sg_egress_rule" {
@@ -105,6 +105,6 @@ resource "aws_security_group_rule" "rds_sg_egress_rule" {
   security_group_id = aws_security_group.rds_sg.id
   cidr_blocks       = [var.all_traffic]
   from_port         = 0
-  protocol          = "-1" 
-  to_port           = 0 
+  protocol          = "-1"
+  to_port           = 0
 }

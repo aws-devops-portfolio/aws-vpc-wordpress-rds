@@ -1,5 +1,5 @@
 output "db_endpoint" {
-    value = aws_db_instance.db_instance.endpoint
+  value = aws_db_instance.db_instance.endpoint
 }
 
 output "db_master_secret_arn" {
