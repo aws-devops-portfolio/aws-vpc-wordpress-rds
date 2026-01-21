@@ -42,16 +42,6 @@ resource "aws_security_group" "ec2_sg" {
   }
 }
 
-#resource "aws_security_group_rule" "ec2_sg_ssh_rule" {
-#  description       = "EC2 instance security group SSH ingress rule"
-#  type              = "ingress"
-#  security_group_id = aws_security_group.ec2_sg.id
-#  cidr_blocks       = [var.all_traffic]
-#  from_port         = var.ssh_port
-#  protocol          = "tcp"
-#  to_port           = var.ssh_port
-#}
-
 resource "aws_security_group_rule" "ec2_sg_http_rule" {
   description              = "EC2 instance security group HTTP ingress rule"
   type                     = "ingress"

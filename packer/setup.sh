@@ -36,6 +36,7 @@ apt-get install -y \
 systemctl enable apache2
 systemctl start apache2
 
+# Download Wordpress
 cd /tmp
 wget https://wordpress.org/latest.tar.gz
 tar -xzf latest.tar.gz
