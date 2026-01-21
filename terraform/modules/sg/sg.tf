@@ -63,7 +63,7 @@ resource "aws_security_group_rule" "ec2_sg_https_rule" {
 }
 
 # tfsec:ignore:aws-ec2-no-public-egress-sgr
-resource "aws_security_group_rule" "ec2_https_egress" {
+resource "aws_security_group_rule" "ec2_https_egress_rule" {
   description       = "Allow EC2 outbound HTTPS (via NAT)"
   type              = "egress"
   security_group_id = aws_security_group.ec2_sg.id
