@@ -20,6 +20,7 @@ defaults:
 
 env:
   AWS_REGION: us-east-1
+  AWS_DEFAULT_REGION: us-east-1
   TF_VERSION: 1.6.0
   TFLINT_VERSION: 0.60.0
   TFSEC_VERSION: 1.28.1
@@ -107,9 +108,17 @@ jobs:
       - name: 'tfsec'
         run: tfsec .
 
-      - name: 'Terraform Plan'
+      - name: Terraform Plan (debug)
+        env:
+          TF_LOG: TRACE
+          TF_LOG_PATH: terraform.log
         run: terraform plan -out=tfplan
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terraform-log
+          path: terraform.log
+          
       - name: 'Terraform Apply'
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
