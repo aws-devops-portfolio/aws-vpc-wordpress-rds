@@ -108,11 +108,11 @@ jobs:
       - name: 'tfsec'
         run: tfsec .
 
-      - name: Terraform Plan (debug)
+      - name: Terraform Plan (no lock, debug)
         env:
           TF_LOG: TRACE
           TF_LOG_PATH: terraform.log
-        run: terraform plan -out=tfplan
+        run: terraform plan -lock=false -parallelism=1
 
       - uses: actions/upload-artifact@v4
         with:
