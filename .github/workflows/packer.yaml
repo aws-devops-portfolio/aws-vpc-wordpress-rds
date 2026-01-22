@@ -8,8 +8,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'packer/**'
+  #  paths:
+  #    - 'packer/**'
 
 defaults:
   run:

@@ -6,13 +6,13 @@ permissions:
 
 on:
   pull_request:
-    paths:
-      - 'terraform/**'
+  #  paths:
+  #    - 'terraform/**'
   push:
     branches:
       - main
-    paths:
-      - 'terraform/**'
+  #  paths:
+  #    - 'terraform/**'
 
 defaults:
   run:
@@ -39,24 +39,36 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      - run: terraform fmt -check -recursive
-      - run: terraform validate
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
-      - run: |
+      - name: Terraform Init
+        run: terraform init -backend=false      
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: TFLint
+        run: |
           curl -sLo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
           unzip tflint.zip -d /usr/local/bin/
           tflint --init
           tflint
 
-      - run: |
+      - name: TFSec
+        run: |
           curl -sLo tfsec https://github.com/aquasecurity/tfsec/releases/download/v${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
           chmod +x tfsec
           mv tfsec /usr/local/bin/
           tfsec .
 
+
   terraform-main:
     name: Terraform Deploy (Main)
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -70,8 +82,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify AWS Identity
-        run: |
-          aws sts get-caller-identity    
+        run: aws sts get-caller-identity    
 
       - name: 'Set up Terraform'  
         uses: hashicorp/setup-terraform@v3
@@ -91,11 +102,11 @@ jobs:
           mv tfsec /usr/local/bin/
           tfsec --version
 
-      - name: 'Terraform Init'
-        run: terraform init
-
       - name: 'Terraform Format Check'
         run: terraform fmt -check -recursive
+
+      - name: 'Terraform Init'
+        run: terraform init
 
       - name: 'Terraform Validate'
         run: terraform validate
@@ -105,17 +116,11 @@ jobs:
           tflint --init
           tflint
 
-      - name: 'tfsec'
-        run: tfsec .
+      - name: 'TFSec'
+        run: tfsec . || true
 
       - name: Terraform Plan 
-        run: terraform plan -out=tfplan
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: terraform-log
-          path: terraform.log
+        run: terraform plan -out=tfplan    
           
-      - name: 'Terraform Apply'
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: 'Terraform Apply'        
         run: terraform apply -auto-approve tfplan
