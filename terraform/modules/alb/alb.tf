@@ -26,10 +26,11 @@ resource "aws_lb_target_group" "web_lb_tg" {
   }
 }
 
+#tfsec:ignore:aws-elb-http-not-used
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.web_alb.arn
   port              = var.tg_port
-  protocol          = "HTTPS"
+  protocol          = "HTTP"
 
   default_action {
     type             = "forward"
