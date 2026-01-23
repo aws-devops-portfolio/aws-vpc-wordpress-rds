@@ -14,6 +14,7 @@ resource "aws_db_subnet_group" "rds_subnet_grp" {
 #tfsec:ignore:aws-rds-specify-backup-retention
 #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 #tfsec:ignore:aws-rds-enable-performance-insights-encryption
+#tfsec:ignore:aws-rds-enable-performance-insights
 resource "aws_db_instance" "db_instance" {
   allocated_storage            = 10
   db_name                      = "wordpressdb"
@@ -27,5 +28,5 @@ resource "aws_db_instance" "db_instance" {
   manage_master_user_password  = true
   parameter_group_name         = "default.mysql8.0"
   skip_final_snapshot          = true
-  performance_insights_enabled = true
+  performance_insights_enabled = false
 }
