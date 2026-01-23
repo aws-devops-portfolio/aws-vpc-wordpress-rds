@@ -27,5 +27,5 @@ resource "aws_db_instance" "db_instance" {
   manage_master_user_password  = true
   parameter_group_name         = "default.mysql8.0"
   skip_final_snapshot          = true
-  performance_insights_enabled = true
+  performance_insights_enabled = false
 }
