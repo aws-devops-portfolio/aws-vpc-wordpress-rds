@@ -77,7 +77,9 @@ jobs:
       run: tfsec .
 
     - name: 'Terraform Plan'
-      run: terraform plan -out=tfplan
+      run: terraform plan -out=tfplan -lock=false
+      env:
+        TF_LOG: TRACE
 
     - name: 'Terraform Apply'
       if: github.ref == 'refs/heads/main'
