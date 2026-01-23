@@ -5,13 +5,17 @@ set -e
 
 set -euxo pipefail
 
+echo "Waiting for cloud-init to finish..."
+cloud-init status --wait
+
 echo "===== OS INFO ====="
 lsb_release -a || cat /etc/os-release
 uname -a
 
 sudo rm -rf /var/lib/apt/lists/*
 sudo apt-get update -y
-sudo apt-get upgrade -y
+# upgrades cause non-deterministic AMI builds
+echo "Skipping apt upgrade for reproducibility"
 
 echo "===== APT SOURCES ====="
 cat /etc/apt/sources.list
