@@ -31,8 +31,9 @@ build {
     execute_command  = "sudo -E bash '{{ .Path }}'"
   }
 
-  post-processor "amazon-ssm" {
-    parameter_name = "/ami/wordpress/latest"
-    overwrite      = true
+  post-processor "shell-local" {
+    inline = [
+      "aws ssm put-parameter --name /ami/wordpress/latest --type String --value '{{ .ArtifactId }}' --overwrite"
+    ]
   }
 }
