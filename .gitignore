@@ -13,6 +13,7 @@ crash.*.log
 # password, private keys, and other secrets.
 *.tfvars
 *.tfvars.json
+!terraform.auto.tfvars
 
 # Ignore transient lock info files created by terraform apply
 .terraform.tfstate.lock.info
