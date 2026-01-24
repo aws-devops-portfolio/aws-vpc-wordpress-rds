@@ -33,7 +33,9 @@ build {
 
   post-processor "shell-local" {
     inline = [
-      "aws ssm put-parameter --name /ami/wordpress/latest --type String --value '{{ .ArtifactId }}' --overwrite"
+      "AMI_ID='{{ build.ArtifactId }}'",
+      "test -n \"$AMI_ID\" || (echo 'AMI ID is empty' && exit 1)",
+      "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$AMI_ID\" --overwrite"
     ]
   }
 }
