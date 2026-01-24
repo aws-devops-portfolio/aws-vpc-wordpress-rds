@@ -33,7 +33,11 @@ build {
 
   post-processor "shell-local" {
     inline = [
+      "echo \"PACKER_ARTIFACT_ID=$PACKER_ARTIFACT_ID\"",
+      "aws --version || echo 'AWS CLI NOT FOUND'",
+      "env | grep AWS || echo 'NO AWS ENV VARS'",
       "AMI_ID=$(echo \"$PACKER_ARTIFACT_ID\" | cut -d':' -f2)",
+      "echo \"Resolved AMI_ID=$AMI_ID\"",
       "test -n \"$AMI_ID\" || (echo 'AMI ID is empty' && exit 1)",
       "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$AMI_ID\" --overwrite"
     ]
