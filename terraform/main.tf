@@ -2,43 +2,39 @@ data "aws_ssm_parameter" "wordpress_ami" {
   name = "/ami/wordpress/latest"
 }
 
-locals {
-  ami_id = replace(data.aws_ssm_parameter.wordpress_ami.value, "ami:", "")
-}
-
-module "vpc" {
-  source   = "./modules/vpc"
+module "networks" {
+  source   = "./modules/networks"
   vpc_cidr = var.vpc_cidr
 }
 
-module "sg" {
-  source = "./modules/sg"
-  vpc_id = module.vpc.vpc_id
+module "security_groups" {
+  source = "./modules/security_groups"
+  vpc_id = module.networks.vpc_id
 }
 
-module "rds" {
-  source             = "./modules/rds"
-  rds_sg_id          = module.sg.rds_sg_id
-  private_subnet_ids = module.vpc.private_subnet_ids
+module "database" {
+  source             = "./modules/database"
+  rds_sg_id          = module.security_groups.rds_sg_id
+  private_subnet_ids = module.networks.private_subnet_ids
 }
 
-module "asg" {
-  source               = "./modules/asg"
-  ami_id               = local.ami_id
-  ec2_sg_id            = module.sg.ec2_sg_id
+module "load_balancer" {
+  source            = "./modules/load_balancer"
+  alb_sg_id         = module.security_groups.alb_sg_id
+  vpc_id            = module.networks.vpc_id
+  public_subnet_ids = module.networks.public_subnet_ids
+}
+
+module "auto_scaling_group" {
+  source               = "./modules/auto_scaling_group"
+  ami_id               = data.aws_ssm_parameter.wordpress_ami.value
+  ec2_sg_id            = module.security_groups.ec2_sg_id
   instance_type        = var.instance_type
-  private_subnet_ids   = module.vpc.private_subnet_ids
-  db_secret_arn        = module.rds.db_master_secret_arn
-  db_endpoint          = module.rds.db_endpoint
-  alb_target_group_arn = module.alb.alb_target_group_arn
+  private_subnet_ids   = module.networks.private_subnet_ids
+  db_secret_arn        = module.database.db_master_secret_arn
+  db_endpoint          = module.database.db_endpoint
+  alb_target_group_arn = module.load_balancer.alb_target_group_arn
   key_pair_name        = "EC2PrivateKP2"
 
-  depends_on = [module.rds]
-}
-
-module "alb" {
-  source            = "./modules/alb"
-  alb_sg_id         = module.sg.alb_sg_id
-  vpc_id            = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnet_ids
+  depends_on = [module.database]
 }
