@@ -33,7 +33,6 @@ build {
 
   post-processor "shell-local" {
     inline = [
-      "AMI_ID='{{ build.ArtifactId }}'",
       "AMI_ID=$(echo \"$PACKER_ARTIFACT_ID\" | cut -d':' -f2)",
       "test -n \"$AMI_ID\" || (echo 'AMI ID is empty' && exit 1)",
       "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$AMI_ID\" --overwrite"
