@@ -35,6 +35,14 @@ jobs:
         run: |
           aws sts get-caller-identity
           aws ec2 describe-regions --region us-east-1
+          
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Export AWS Region
+        run: echo "AWS_REGION=us-east-1" >> $GITHUB_ENV
 
       - name: Setup Packer
         uses: hashicorp/setup-packer@v3
