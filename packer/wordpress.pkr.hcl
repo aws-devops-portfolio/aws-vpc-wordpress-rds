@@ -40,7 +40,7 @@ build {
     inline = [
      "set -e",
       "AMI_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d\":\" -f2)",
-      "echo \"Resolved AMI_ID=${AMI_ID}\"",
+      "echo \"Resolved AMI_ID=$AMI_ID\"",
       "test -n \"$AMI_ID\"",
       "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$AMI_ID\" --overwrite"
     ]
