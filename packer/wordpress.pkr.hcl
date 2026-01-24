@@ -31,14 +31,17 @@ build {
     execute_command  = "sudo -E bash '{{ .Path }}'"
   }
 
+  post-processor "manifest" {
+    output     = "packer-manifest.json"
+    strip_path = true
+  }
+
   post-processor "shell-local" {
     inline = [
-      "echo \"PACKER_ARTIFACT_ID=$PACKER_ARTIFACT_ID\"",
-      "aws --version || echo 'AWS CLI NOT FOUND'",
-      "env | grep AWS || echo 'NO AWS ENV VARS'",
-      "AMI_ID=$(echo \"$PACKER_ARTIFACT_ID\" | cut -d':' -f2)",
-      "echo \"Resolved AMI_ID=$AMI_ID\"",
-      "test -n \"$AMI_ID\" || (echo 'AMI ID is empty' && exit 1)",
+     "set -e",
+      "AMI_ID=$(jq -r '.builds[-1].artifact_id' packer-manifest.json | cut -d\":\" -f2)",
+      "echo \"Resolved AMI_ID=${AMI_ID}\"",
+      "test -n \"$AMI_ID\"",
       "aws ssm put-parameter --name /ami/wordpress/latest --type String --value \"$AMI_ID\" --overwrite"
     ]
   }
