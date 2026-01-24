@@ -68,9 +68,9 @@ resource "aws_security_group_rule" "ec2_https_egress_rule" {
   type              = "egress"
   security_group_id = aws_security_group.ec2_sg.id
   cidr_blocks       = [var.all_traffic]
-  from_port         = var.https_port
-  protocol          = "tcp"
-  to_port           = var.https_port
+  from_port         = 0
+  protocol          = "-1"
+  to_port           = 0
 }
 
 resource "aws_security_group" "rds_sg" {

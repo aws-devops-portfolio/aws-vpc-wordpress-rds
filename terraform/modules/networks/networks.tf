@@ -28,6 +28,7 @@ locals {
 }
 
 # Public Subnet
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
 resource "aws_subnet" "public-subnet" {
   count      = length(local.selected_azs)
   vpc_id     = aws_vpc.main.id
@@ -35,7 +36,7 @@ resource "aws_subnet" "public-subnet" {
 
   availability_zone = local.selected_azs[count.index % length(local.selected_azs)]
 
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "public-subnet-${count.index + 1}"

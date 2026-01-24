@@ -18,11 +18,11 @@ resource "aws_lb_target_group" "web_lb_tg" {
   target_type = "instance"
 
   health_check {
-    path                = var.health_check_path
+    path                = "/"
     healthy_threshold   = var.healthy_threshold
     unhealthy_threshold = var.unhealthy_threshold
     interval            = var.interval
-    timeout             = var.timeout
+    timeout             = var.timeout    
   }
 }
 
