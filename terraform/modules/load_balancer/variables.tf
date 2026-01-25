@@ -24,7 +24,7 @@ variable "unhealthy_threshold" {
 }
 variable "timeout" {
   type    = number
-  default = 10
+  default = 60
 }
 variable "interval" {
   type    = number

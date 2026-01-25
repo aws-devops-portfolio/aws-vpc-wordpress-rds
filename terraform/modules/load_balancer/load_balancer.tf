@@ -22,7 +22,8 @@ resource "aws_lb_target_group" "web_lb_tg" {
     healthy_threshold   = var.healthy_threshold
     unhealthy_threshold = var.unhealthy_threshold
     interval            = var.interval
-    timeout             = var.timeout    
+    timeout             = var.timeout 
+    matcher             = 200-399        
   }
 }
 
