@@ -51,6 +51,10 @@ resource "aws_launch_template" "wordpress_lt" {
     })
   )
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tag_specifications {
     resource_type = "instance"
 
