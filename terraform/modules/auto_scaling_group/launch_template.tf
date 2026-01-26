@@ -48,7 +48,6 @@ resource "aws_launch_template" "wordpress_lt" {
       DB_SECRET_ARN  = var.db_secret_arn
       TF_DB_ENDPOINT = var.db_endpoint
       TF_DB_NAME     = var.db_name
-      ALB_DNS        = var.alb_dns
     })
   )
 
