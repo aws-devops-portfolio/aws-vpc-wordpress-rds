@@ -4,10 +4,10 @@ set -euxo pipefail
 apt-get update -y
 apt-get install -y unzip curl
 
-cd /tmp
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
-unzip awscliv2.zip
-./aws/install
+# Install AWS CLI v2 (latest official package from AWS)
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+unzip /tmp/awscliv2.zip -d /tmp
+sudo /tmp/aws/install
 
 DB_SECRET_ARN="${DB_SECRET_ARN}"
 DB_HOST="${TF_DB_ENDPOINT}"
