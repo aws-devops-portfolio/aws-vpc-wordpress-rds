@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euxo pipefail
 
+apt-get update -y
+apt-get install -y unzip curl
+
+cd /tmp
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
+unzip awscliv2.zip
+./aws/install
+
 DB_SECRET_ARN="${DB_SECRET_ARN}"
 DB_HOST="${TF_DB_ENDPOINT}"
 DB_NAME="${TF_DB_NAME}"
