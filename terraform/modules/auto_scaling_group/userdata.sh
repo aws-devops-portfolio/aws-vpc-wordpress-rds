@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euxo pipefail
 
 DB_SECRET_ARN="${DB_SECRET_ARN}"
 DB_HOST="${TF_DB_ENDPOINT}"
@@ -13,7 +13,17 @@ DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
 DB_USER=$(echo "$DB_SECRET_JSON" | jq -r '.username')
 DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
 
-cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+cd /var/www/html
+
+# wait until WordPress files exist (defensive)
+while [ ! -f wp-config-sample.php ]; do
+  echo "Waiting for WordPress files..."
+  sleep 5
+done
+
+if [ ! -f wp-config.php ]; then
+  cp wp-config-sample.php wp-config.php
+fi
 
 sed -i "s|define( 'DB_NAME'.*|define( 'DB_NAME', '$DB_NAME' );|" /var/www/html/wp-config.php
 sed -i "s|define( 'DB_USER'.*|define( 'DB_USER', '$DB_USER' );|" /var/www/html/wp-config.php
