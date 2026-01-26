@@ -34,6 +34,7 @@ module "auto_scaling_group" {
   db_secret_arn        = module.database.db_master_secret_arn
   db_endpoint          = module.database.db_endpoint
   alb_target_group_arn = module.load_balancer.alb_target_group_arn
+  alb_dns              = module.load_balancer.alb_url
   key_pair_name        = "EC2PrivateKP2"
 
   depends_on = [module.database]

@@ -31,6 +31,10 @@ variable "alb_target_group_arn" {
   type        = string
   description = "Load Balancer target group ARN"
 }
+variable "alb_dns" {
+  type        = string
+  description = "Load Balancer DNS"
+}
 variable "key_pair_name" {
   type        = string
   description = "EC2 instance key pair name"
