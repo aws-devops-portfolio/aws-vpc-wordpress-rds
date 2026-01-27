@@ -33,10 +33,13 @@ if [ ! -f wp-config.php ]; then
   cp wp-config-sample.php wp-config.php
 fi
 
-sed -i "s|define( 'DB_NAME'.*|define( 'DB_NAME', '$DB_NAME' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_USER'.*|define( 'DB_USER', '$DB_USER' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_PASSWORD'.*|define( 'DB_PASSWORD', '$DB_PASSWORD' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_HOST'.*|define( 'DB_HOST', '$DB_HOST' );|" /var/www/html/wp-config.php
+cat <<EOF >> /var/www/html/wp-config.php
+
+define('DB_NAME', '${DB_NAME}');
+define('DB_USER', '${DB_USER}');
+define('DB_PASSWORD', '${DB_PASSWORD}');
+define('DB_HOST', '${DB_HOST}');
+EOF
 
 sed -i "s|define('WP_HOME'.*|define('WP_HOME', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));|" /var/www/html/wp-config.php
 sed -i "s|define('WP_SITEURL'.*|define('WP_SITEURL', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));|" /var/www/html/wp-config.php
