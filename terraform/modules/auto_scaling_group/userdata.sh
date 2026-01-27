@@ -2,16 +2,12 @@
 set -euxo pipefail
 
 apt-get update -y
-apt-get install -y unzip curl
+apt-get install -y unzip curl jq
 
 # Install AWS CLI v2 (latest official package from AWS)
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
 unzip /tmp/awscliv2.zip -d /tmp
-sudo /tmp/aws/install
-
-DB_SECRET_ARN="${DB_SECRET_ARN}"
-DB_HOST="${TF_DB_ENDPOINT}"
-DB_NAME="${TF_DB_NAME}"
+/tmp/aws/install
 
 DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
   --secret-id "$DB_SECRET_ARN" \
@@ -29,16 +25,23 @@ while [ ! -f wp-config-sample.php ]; do
   sleep 5
 done
 
+# Create wp-config.php if missing
 if [ ! -f wp-config.php ]; then
   cp wp-config-sample.php wp-config.php
 fi
 
-sed -i "s|define( 'DB_NAME'.*|define( 'DB_NAME', '$DB_NAME' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_USER'.*|define( 'DB_USER', '$DB_USER' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_PASSWORD'.*|define( 'DB_PASSWORD', '$DB_PASSWORD' );|" /var/www/html/wp-config.php
-sed -i "s|define( 'DB_HOST'.*|define( 'DB_HOST', '$DB_HOST' );|" /var/www/html/wp-config.php
+cat <<EOF >> /var/www/html/wp-config.php
 
-sed -i "s|define('WP_HOME'.*|define('WP_HOME', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));|" /var/www/html/wp-config.php
-sed -i "s|define('WP_SITEURL'.*|define('WP_SITEURL', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));|" /var/www/html/wp-config.php
+define('DB_NAME', '${DB_NAME}');
+define('DB_USER', '${DB_USER}');
+define('DB_PASSWORD', '${DB_PASSWORD}');
+define('DB_HOST', '${DB_HOST}');
+EOF
+
+grep -q "WP_HOME" wp-config.php || cat <<EOF >> wp-config.php
+define('WP_HOME', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));
+define('WP_SITEURL', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));
+EOF
+
 
 chown www-data:www-data /var/www/html/wp-config.php

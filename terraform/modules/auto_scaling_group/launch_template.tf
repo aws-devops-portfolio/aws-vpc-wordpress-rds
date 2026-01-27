@@ -46,8 +46,8 @@ resource "aws_launch_template" "wordpress_lt" {
   user_data = base64encode(
     templatefile("${path.module}/userdata.sh", {
       DB_SECRET_ARN  = var.db_secret_arn
-      TF_DB_ENDPOINT = var.db_endpoint
-      TF_DB_NAME     = var.db_name
+      DB_HOST        = var.db_endpoint
+      DB_NAME        = var.db_name
     })
   )
 
