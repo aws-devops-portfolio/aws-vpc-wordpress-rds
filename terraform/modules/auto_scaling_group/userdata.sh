@@ -4,13 +4,19 @@ set -euxo pipefail
 apt-get update -y
 apt-get install -y unzip curl jq
 
-: "$${DB_SECRET_ARN:?DB_SECRET_ARN is required}"
-: "$${DB_HOST:?DB_HOST is required}"
-: "$${DB_NAME:?DB_NAME is required}"
+DB_SECRET_ARN="${DB_SECRET_ARN}"
+DB_HOST="${DB_HOST}"
+DB_NAME="${DB_NAME}"
+
+: "${DB_SECRET_ARN:?DB_SECRET_ARN is required}"
+: "${DB_HOST:?DB_HOST is required}"
+: "${DB_NAME:?DB_NAME is required}"
 
 # Install AWS CLI v2 (latest official package from AWS)
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip /tmp/awscliv2.zip -d /tmp
+unzip /tmp/awscliv2.zip -d /tmpDB_SECRET_ARN="${db_secret_arn}"
+DB_HOST="${db_host}"
+DB_NAME="${db_name}"
 /tmp/aws/install
 
 DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
