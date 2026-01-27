@@ -14,9 +14,9 @@ DB_NAME="${DB_NAME}"
 
 # Install AWS CLI v2 (latest official package from AWS)
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip /tmp/awscliv2.zip -d /tmpDB_SECRET_ARN="${db_secret_arn}"
-DB_HOST="${db_host}"
-DB_NAME="${db_name}"
+unzip /tmp/awscliv2.zip -d /tmpDB_SECRET_ARN="${DB_SECRET_ARN}"
+DB_HOST="${DB_HOST}"
+DB_NAME="${DB_NAME}"
 /tmp/aws/install
 
 DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
