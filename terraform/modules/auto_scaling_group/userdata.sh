@@ -52,11 +52,11 @@ fi
 
 # Replace DB settings (idempotent — no duplicates ever)
 sed -i \
-  -e "s/define( *'DB_NAME'.*/define('DB_NAME', '${DB_NAME}');/" \
-  -e "s/define( *'DB_USER'.*/define('DB_USER', '${DB_USER}');/" \
-  -e "s/define( *'DB_PASSWORD'.*/define('DB_PASSWORD', '${DB_PASSWORD}');/" \
-  -e "s/define( *'DB_HOST'.*/define('DB_HOST', '${DB_HOST_CLEAN}');/" \
-  wp-config.php
+  -e "s/database_name_here/$${DB_NAME}/" \
+  -e "s/username_here/$${DB_USER}/" \
+  -e "s/password_here/$${DB_PASSWORD}/" \
+  -e "s/localhost/$${DB_HOST_CLEAN}/" \
+  /var/www/html/wp-config.php
 
 # Ensure correct permissions
 chown www-data:www-data wp-config.php
