@@ -1,9 +1,18 @@
 #!/bin/bash
 set -euxo pipefail
 
-apt-get update -y
-apt-get install -y unzip curl jq
+# Install dependencies
+if command -v apt-get >/dev/null 2>&1; then
+  apt-get update -y
+  apt-get install -y unzip curl jq php-mysql
+elif command -v yum >/dev/null 2>&1; then
+  yum install -y unzip curl jq php-mysqlnd
+else
+  echo "Unsupported OS"
+  exit 1
+fi
 
+# Terraform-injected variables
 DB_SECRET_ARN="${DB_SECRET_ARN}"
 DB_HOST="${DB_HOST}"
 DB_NAME="${DB_NAME}"
@@ -12,11 +21,18 @@ DB_NAME="${DB_NAME}"
 : "$${DB_HOST:?DB_HOST is required}"
 : "$${DB_NAME:?DB_NAME is required}"
 
-# Install AWS CLI v2 (latest official package from AWS)
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
-unzip /tmp/awscliv2.zip -d /tmp
-/tmp/aws/install
+# Strip port from DB_HOST (WordPress does NOT want it)
+DB_HOST_CLEAN="${DB_HOST%%:*}"
 
+# Install AWS CLI v2 if missing
+if ! command -v aws >/dev/null 2>&1; then
+  cd /tmp
+  curl -s https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip
+  unzip -q awscliv2.zip
+  ./aws/install
+fi
+
+# Fetch DB credentials from Secrets Manager
 DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
   --secret-id "${DB_SECRET_ARN}" \
   --query SecretString \
@@ -25,31 +41,26 @@ DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
 DB_USER=$(echo "$DB_SECRET_JSON" | jq -r '.username')
 DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
 
-cd /var/www/html
-
-# wait until WordPress files exist (defensive)
-while [ ! -f wp-config-sample.php ]; do
-  echo "Waiting for WordPress files..."
-  sleep 5
-done
+# WordPress directory
+WP_DIR="/var/www/html"
+cd "$WP_DIR"
 
 # Create wp-config.php if missing
 if [ ! -f wp-config.php ]; then
   cp wp-config-sample.php wp-config.php
 fi
 
-cat <<EOF >> /var/www/html/wp-config.php
+# Replace DB settings (idempotent — no duplicates ever)
+sed -i \
+  -e "s/define( *'DB_NAME'.*/define('DB_NAME', '${DB_NAME}');/" \
+  -e "s/define( *'DB_USER'.*/define('DB_USER', '${DB_USER}');/" \
+  -e "s/define( *'DB_PASSWORD'.*/define('DB_PASSWORD', '${DB_PASSWORD}');/" \
+  -e "s/define( *'DB_HOST'.*/define('DB_HOST', '${DB_HOST_CLEAN}');/" \
+  wp-config.php
 
-define('DB_NAME', '${DB_NAME}');
-define('DB_USER', '$${DB_USER}');
-define('DB_PASSWORD', '$${DB_PASSWORD}');
-define('DB_HOST', '${DB_HOST}');
-EOF
+# Ensure correct permissions
+chown www-data:www-data wp-config.php
+chmod 640 wp-config.php
 
-grep -q "WP_HOME" wp-config.php || cat <<EOF >> wp-config.php
-define('WP_HOME', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));
-define('WP_SITEURL', 'http://' . (\$_SERVER['HTTP_HOST'] ?? 'localhost'));
-EOF
-
-
-chown www-data:www-data /var/www/html/wp-config.php
+# Restart Apache to be safe
+systemctl restart apache2
