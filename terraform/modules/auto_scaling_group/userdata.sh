@@ -38,8 +38,8 @@ DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
   --query SecretString \
   --output text)
 
-DB_USER=$(echo "$$DB_SECRET_JSON" | jq -r '.username')
-DB_PASSWORD=$(echo "$$DB_SECRET_JSON" | jq -r '.password')
+DB_USER=$(echo "$DB_SECRET_JSON" | jq -r '.username')
+DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
 
 # WordPress directory
 WP_DIR="/var/www/html"
