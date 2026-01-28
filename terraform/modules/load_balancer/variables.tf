@@ -20,11 +20,11 @@ variable "healthy_threshold" {
 }
 variable "unhealthy_threshold" {
   type    = number
-  default = 10
+  default = 2
 }
 variable "timeout" {
   type    = number
-  default = 10
+  default = 5
 }
 variable "interval" {
   type    = number

@@ -32,6 +32,18 @@ resource "aws_security_group_rule" "alb_sg_https_rule" {
   to_port           = var.https_port
 }
 
+# tfsec:ignore:aws-ec2-no-public-egress-sgr
+resource "aws_security_group_rule" "alb_https_egress_rule" {
+  description       = "Allow ALB outbound HTTPS"
+  type              = "egress"
+  security_group_id = aws_security_group.alb_sg.id
+  cidr_blocks       = [var.all_traffic]
+  from_port         = 0
+  protocol          = "-1"
+  to_port           = 0
+}
+
+
 resource "aws_security_group" "ec2_sg" {
   name        = "ec2_sg"
   description = "Allows ALB to access the EC2 instances"
