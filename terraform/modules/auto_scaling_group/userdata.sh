@@ -22,7 +22,7 @@ DB_NAME="${DB_NAME}"
 : "$${DB_NAME:?DB_NAME is required}"
 
 # Strip port from DB_HOST (WordPress does NOT want it)
-DB_HOST_CLEAN="${DB_HOST%%:*}"
+DB_HOST_CLEAN="$${DB_HOST%%:*}"
 
 # Install AWS CLI v2 if missing
 if ! command -v aws >/dev/null 2>&1; then
@@ -38,8 +38,8 @@ DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
   --query SecretString \
   --output text)
 
-DB_USER=$(echo "$DB_SECRET_JSON" | jq -r '.username')
-DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
+DB_USER=$(echo "$$DB_SECRET_JSON" | jq -r '.username')
+DB_PASSWORD=$(echo "$$DB_SECRET_JSON" | jq -r '.password')
 
 # WordPress directory
 WP_DIR="/var/www/html"
