@@ -35,7 +35,3 @@ variable "alb_dns" {
   type        = string
   description = "Load Balancer DNS"
 }
-variable "key_pair_name" {
-  type        = string
-  description = "EC2 instance key pair name"
-}

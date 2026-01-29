@@ -8,7 +8,8 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 - NAT Gateway - to allow internet access for EC2 instance inside private subnet
 - Internet Gateway - to allow internet access for public subnets
 - Security Groups - least priviledge network access
-- RDS - MYSQL engine for Wordpress database  
+- RDS - MYSQL engine for Wordpress database 
+- Secrets Manager - Storing RDS generated credentials 
 - EC2 instance - hosting the Wordpress server in private subnet
 - Load Balancer - distribute traffic across Availability Zones
 
