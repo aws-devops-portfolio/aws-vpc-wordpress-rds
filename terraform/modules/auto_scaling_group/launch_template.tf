@@ -18,7 +18,6 @@ resource "aws_iam_role" "ec2_role" {
         },
         "Action": "sts:AssumeRole"
       }
-
     ]
   })
 }
@@ -37,8 +36,6 @@ resource "aws_launch_template" "wordpress_lt" {
   name_prefix   = "wordpress-lt-"
   image_id      = var.ami_id
   instance_type = var.instance_type
-
-  key_name = var.key_pair_name
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_profile.name
