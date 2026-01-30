@@ -4,14 +4,19 @@ VPC Wordpress RDS deployment
 This project provisions a secure AWS VPC, deploys a WordPress application on EC2, and connects it to an RDS MySQL database in private subnets.
 
 ## ARCHITECTURE
+- Terraform - infrasture as code
+- Packer - creation of custom AMI built with 
 - VPC - with two public and two private subnets
 - NAT Gateway - to allow internet access for EC2 instance inside private subnet
 - Internet Gateway - to allow internet access for public subnets
 - Security Groups - least priviledge network access
 - RDS - MYSQL engine for Wordpress database 
-- Secrets Manager - Storing RDS generated credentials 
+- Secrets Manager - storing RDS generated credentials 
+- IAM - permissions
 - EC2 instance - hosting the Wordpress server in private subnet
 - Load Balancer - distribute traffic across Availability Zones
+- S3 - manage Terraform backend state
+- SSM - store the created AMI id 
 
 ## DEPLOYMENT
 - Provisioned using Terraform
