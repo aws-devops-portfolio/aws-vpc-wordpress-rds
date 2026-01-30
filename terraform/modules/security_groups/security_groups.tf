@@ -4,7 +4,7 @@ resource "aws_security_group" "alb_sg" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "alb_sg"
+    Name = "wp_alb_sg"
   }
 }
 
@@ -50,7 +50,7 @@ resource "aws_security_group" "ec2_sg" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "ec2_sg"
+    Name = "wp_ec2_sg"
   }
 }
 
@@ -91,7 +91,7 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "rds_sg"
+    Name = "wp_rds_sg"
   }
 }
 
