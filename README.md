@@ -164,9 +164,11 @@ Successfully deployed and accessed WordPress home page after completing the setu
 ## Issues experienced
 ## 1. OIDC Role Assumption Failure (Github Actions - AWS)
    **Issue**
+   
    Not authorized to perform sts:AssumeRoleWithWebIdentity
 
    **Cause**
+   
    This can occur if:
    - The IAM role trust policy is missing or misconfigured.
    - The GitHub repository name or organization name in the trust policy is incorrect.
@@ -179,9 +181,11 @@ Successfully deployed and accessed WordPress home page after completing the setu
 
 ## 2. 504 Bad Gateway response when accessing the application via Load balancer 
    **Issue**
+   
    504 Bad Gateway error when accessing the application through the Application Load Balancer (ALB) endpoint
 
    **Cause**
+   
    The Application Load Balancer was unable to forward traffic to the EC2 instances due to a missing egress (outbound) rule in the Load Balancer’s security group.
 
    **Solution**
@@ -189,9 +193,11 @@ Successfully deployed and accessed WordPress home page after completing the setu
 
 ## 3. Wordpress Database connection error
    **Issue**
+   
    Error establishing a database connection
 
    **Cause**
+   
    Incorrect database configuration values in wp-config.php, such as:
    - Wrong database host
    - Incorrect database name
