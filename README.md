@@ -6,6 +6,7 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 ## ARCHITECTURE
 - Terraform - infrasture as code
 - Packer - creation of custom AMI packaged with Wordpress installation 
+- Packer - creation of custom AMI packaged with Wordpress installation 
 - VPC - with two public and two private subnets
 - NAT Gateway - to allow internet access for EC2 instance inside private subnet
 - Internet Gateway - to allow internet access for public subnets
