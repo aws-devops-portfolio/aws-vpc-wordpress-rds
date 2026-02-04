@@ -36,7 +36,7 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 - Integrated AWS OIDC Authentication with Github actions
 
 ## Provisioned resources
-- Git push triggering deployment in Github actions
+- Git push triggering deployment in Github actions:
 ![alt text](<images/git_push.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 ![alt text](<images/ami_details.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- AMI Id stored in Parameter Store
+- AMI Id stored in Parameter Store:
 ![alt text](<images/ami_in_parameter_store.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -56,35 +56,35 @@ This project provisions a secure AWS VPC, deploys a WordPress application on EC2
 ![alt text](<images/infrastructure_provisioning.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Amazon S3 backend state
+- Amazon S3 backend state:
 ![alt text](<images/s3_backend_state.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- EC2 instance launched successfully
+- EC2 instance launched successfully:
 ![alt text](<images/ec2_instance_details.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- VPC created
+- VPC created:
 ![alt text](<images/vpc_details.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Security Groups
+- Security Groups:
 ![alt text](<images/security_groups.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Database created
+- Database created:
 ![alt text](<images/rds_details.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Load Balancer
+- Load Balancer:
 ![alt text](<images/load_balancer.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Target Group with a healthy EC2 instance
+- Target Group with a healthy EC2 instance:
 ![alt text](<images/target_group.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-- Autoscaling Group
+- Autoscaling Group:
 ![alt text](<images/autoscaling_group.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
