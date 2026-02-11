@@ -14,6 +14,7 @@ terraform {
     key            = "s3-github-actions/wordpress.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-locks"
+    encrypt        = true
   }
 }
 
