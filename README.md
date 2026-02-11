@@ -80,6 +80,15 @@ Terraform state stored remotely in Amazon S3 backend for state consistency and c
 ![alt text](<images/s3_backend_state.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+**Terraform Remote State Locking (Amazon DynamoDB)**
+
+Terraform state locking is implemented using an Amazon DynamoDB table to prevent concurrent state modifications during terraform apply.This ensures consistent 
+infrastructure provisioning, protection against state corruption, and safe collaboration across CICD pipelines or engineers.
+The DynamoDB table uses a primary key (LockID) to manage Terraform state locks and enforces mutual exclusion during infrastructure updates.
+
+![alt text](<images/dynamodb_state_locking.png>)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 **EC2 Instance Provisioning**
 
 EC2 instance launched successfully using the custom AMI
