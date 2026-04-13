@@ -1,7 +1,11 @@
-output "alb_url" {
+output "alb_dns_name" {
   value = aws_lb.web_alb.dns_name
 }
 
 output "alb_target_group_arn" {
-  value = aws_lb_target_group.web_lb_tg.arn
+  value = aws_lb_target_group.web_alb_tg.arn
+}
+
+output "alb_zone_id" {
+  value = aws_lb.web_alb.zone_id
 }
