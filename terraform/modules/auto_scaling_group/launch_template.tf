@@ -64,7 +64,7 @@ resource "aws_launch_template" "wordpress_lt" {
     resource_type = "instance"
 
     tags = {
-      Name = "wordpress-asg-instance"
+      Name = "wordpress-instance"
     }
   }
 }

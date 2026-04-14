@@ -57,6 +57,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation_record : record.fqdn]
 }
 
+# Listeners
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_lb.web_alb.arn
   port              = var.http_port
