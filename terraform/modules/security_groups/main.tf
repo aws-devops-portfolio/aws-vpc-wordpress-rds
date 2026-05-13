@@ -1,10 +1,10 @@
 resource "aws_security_group" "alb_sg" {
-  name        = "alb_sg"
+  name        = "${var.prefix}-alb-sg"
   description = "Allow web access"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "wp_alb_sg"
+    Name = "${var.prefix}-alb-sg"
   }
 }
 
@@ -45,12 +45,12 @@ resource "aws_security_group_rule" "alb_https_egress_rule" {
 
 
 resource "aws_security_group" "ec2_sg" {
-  name        = "ec2_sg"
+  name        = "${var.prefix}-ec2-sg"
   description = "Allows ALB to access the EC2 instances"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "wp_ec2_sg"
+    Name = "${var.prefix}-ec2-sg"
   }
 }
 
@@ -86,12 +86,12 @@ resource "aws_security_group_rule" "ec2_https_egress_rule" {
 }
 
 resource "aws_security_group" "rds_sg" {
-  name        = "rds_sg"
+  name        = "${var.prefix}-rds-sg"
   description = "Allows application to access the RDS instances"
   vpc_id      = var.vpc_id
 
   tags = {
-    Name = "wp_rds_sg"
+    Name = "${var.prefix}-rds-sg"
   }
 }
 
@@ -104,3 +104,35 @@ resource "aws_security_group_rule" "rds_sg_ingress_rule" {
   protocol                 = "tcp"
   to_port                  = var.rds_port
 }
+
+
+resource "aws_security_group" "efs_sg" {
+  name        = "${var.prefix}-efs-sg"
+  description = "Allows EFS to access the EC2 instances"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.prefix}-efs-sg"
+  }
+}
+
+resource "aws_security_group_rule" "efs_sg_ingress_rule" {
+  description              = "EFS security group ingress rule"
+  type                     = "ingress"
+  security_group_id        = aws_security_group.efs_sg.id
+  source_security_group_id = aws_security_group.ec2_sg.id
+  from_port                = var.efs_port
+  protocol                 = "tcp"
+  to_port                  = var.efs_port
+}
+
+resource "aws_security_group_rule" "efs_sg_egress_rule" {
+  description       = "Allow EFS outbound traffic (via NAT)"
+  type              = "egress"
+  security_group_id = aws_security_group.efs_sg.id
+  cidr_blocks       = [var.all_traffic]
+  from_port         = 0
+  protocol          = "-1"
+  to_port           = 0
+}
+

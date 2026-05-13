@@ -4,9 +4,9 @@ set -euxo pipefail
 # Install dependencies
 if command -v apt-get >/dev/null 2>&1; then
   apt-get update -y
-  apt-get install -y unzip curl jq php-mysql
+  apt-get install -y unzip curl jq php-mysql amazon-efs-utils
 elif command -v yum >/dev/null 2>&1; then
-  yum install -y unzip curl jq php-mysqlnd
+  yum install -y unzip curl jq php-mysqlnd amazon-efs-utils
 else
   echo "Unsupported OS"
   exit 1
@@ -16,10 +16,12 @@ fi
 DB_SECRET_ARN="${DB_SECRET_ARN}"
 DB_HOST="${DB_HOST}"
 DB_NAME="${DB_NAME}"
+EFS_ID="${EFS_ID}"
 
 : "$${DB_SECRET_ARN:?DB_SECRET_ARN is required}"
 : "$${DB_HOST:?DB_HOST is required}"
 : "$${DB_NAME:?DB_NAME is required}"
+: "$${EFS_ID:?EFS_ID is required}"
 
 # Strip port from DB_HOST (WordPress does NOT want it)
 DB_HOST_CLEAN="$${DB_HOST%%:*}"
@@ -43,6 +45,7 @@ DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
 
 # WordPress directory
 WP_DIR="/var/www/html"
+WP_CONFIG="/var/www/html/wp-config.php"
 cd "$WP_DIR"
 
 # Create wp-config.php if missing
@@ -56,7 +59,28 @@ sed -i \
   -e "s/username_here/$${DB_USER}/" \
   -e "s/password_here/$${DB_PASSWORD}/" \
   -e "s/localhost/$${DB_HOST_CLEAN}/" \
-  /var/www/html/wp-config.php
+  WP_CONFIG
+  
+# Add WordPress domain configuration
+cat <<EOF >> $WP_CONFIG
+
+/* WordPress domain configuration */
+define('WP_HOME','https://wordpress.mike71techsolutions.com');
+define('WP_SITEURL','https://wordpress.mike71techsolutions.com');
+
+/* HTTPS handling behind ALB */
+\$_SERVER['HTTPS'] = 'on';
+
+if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    \$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+    \$_SERVER['HTTPS'] = 'on';
+}
+EOF
+
+# Mount EFS
+mkdir -p /mnt/efs
+mount -t efs "${EFS_ID}:/ /mnt/efs"
+echo "${EFS_ID}:/ /mnt/efs efs defaults,_netdev 0 0" >> /etc/fstab
 
 # Ensure correct permissions
 chown www-data:www-data wp-config.php

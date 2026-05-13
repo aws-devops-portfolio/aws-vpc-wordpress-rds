@@ -9,17 +9,28 @@ data "aws_route53_zone" "main" {
 module "networks" {
   source       = "./modules/networks"
   vpc_cidr     = var.vpc_cidr  
+  prefix       = var.app_prefix
 }
 
 module "security_groups" {
   source = "./modules/security_groups"
   vpc_id = module.networks.vpc_id
+  prefix = var.app_prefix
 }
+
+module "elastic_file_system" {
+  source             = "./modules/elastic_file_system"
+  efs_sg_id          = module.security_groups.efs_sg_id
+  private_subnet_ids = module.networks.private_subnet_ids
+  prefix             = var.app_prefix
+}
+
 
 module "database" {
   source             = "./modules/database"
   rds_sg_id          = module.security_groups.rds_sg_id
   private_subnet_ids = module.networks.private_subnet_ids
+  prefix             = var.app_prefix
 }
 
 module "load_balancer" {
@@ -28,7 +39,8 @@ module "load_balancer" {
   vpc_id            = module.networks.vpc_id
   public_subnet_ids = module.networks.public_subnet_ids
   sub_domain        = "wordpress.mike71techsolutions.com"
-  route53_zone_id   = data.aws_route53_zone.main.zone_id  
+  route53_zone_id   = data.aws_route53_zone.main.zone_id
+  prefix            = var.app_prefix
 }
 
 module "auto_scaling_group" {
@@ -41,7 +53,9 @@ module "auto_scaling_group" {
   db_endpoint          = module.database.db_endpoint
   alb_target_group_arn = module.load_balancer.alb_target_group_arn
   alb_dns              = module.load_balancer.alb_dns_name
-
+  efs_id               = module.elastic_file_system.efs_id
+  prefix               = var.app_prefix
+  
   depends_on = [module.database]
 }
 

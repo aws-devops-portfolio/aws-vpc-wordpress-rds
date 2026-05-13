@@ -45,3 +45,8 @@ variable "route53_zone_id" {
   type        = string
   description = "Route 53 Zone Id" 
 }
+
+variable "prefix" {
+  type        = string
+  description = "Prefix for naming resources"  
+}

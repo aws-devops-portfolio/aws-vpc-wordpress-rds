@@ -11,3 +11,8 @@ variable "private_subnet_count" {
   type    = number
   default = 4
 }
+
+variable "prefix" {
+  type        = string
+  description = "Prefix for naming resources"  
+}

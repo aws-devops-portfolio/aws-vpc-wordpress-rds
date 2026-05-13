@@ -30,8 +30,8 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
-resource "aws_launch_template" "wordpress_lt" {
-  name_prefix   = "wordpress-lt-"
+resource "aws_launch_template" "wp_lt" {
+  name_prefix   = "${var.prefix}-lt-"
   image_id      = var.ami_id
   instance_type = var.instance_type
 
@@ -53,6 +53,7 @@ resource "aws_launch_template" "wordpress_lt" {
       DB_SECRET_ARN  = var.db_secret_arn
       DB_HOST        = var.db_endpoint
       DB_NAME        = var.db_name
+      EFS_ID         = var.efs_id
     })
   )
 
@@ -69,17 +70,18 @@ resource "aws_launch_template" "wordpress_lt" {
   }
 }
 
-resource "aws_autoscaling_group" "wordpress" {
-  name                      = "wordpress-asg"
-  desired_capacity          = 1
-  max_size                  = 2
-  min_size                  = 1
-  vpc_zone_identifier       = var.private_subnet_ids
+resource "aws_autoscaling_group" "wp_asg" {
+  name                      = "${var.prefix}-asg"
+  desired_capacity          = 2
+  max_size                  = 4
+  min_size                  = 2  
   health_check_type         = "ELB"
   health_check_grace_period = 300
 
+  vpc_zone_identifier       = var.private_subnet_ids
+
   launch_template {
-    id      = aws_launch_template.wordpress_lt.id
+    id      = aws_launch_template.wp_lt.id
     version = "$Latest"
   }
 
@@ -87,7 +89,7 @@ resource "aws_autoscaling_group" "wordpress" {
 
   tag {
     key                 = "Name"
-    value               = "wordpress-asg"
+    value               = "${var.prefix}-asg"
     propagate_at_launch = true
   }
 }

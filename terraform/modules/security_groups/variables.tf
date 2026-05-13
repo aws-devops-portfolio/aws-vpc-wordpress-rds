@@ -23,6 +23,16 @@ variable "rds_port" {
   default = 3306
 }
 
+variable "efs_port" {
+  type    = number
+  default = 2049
+}
+
 variable "vpc_id" {
   type = string
+}
+
+variable "prefix" {
+  type        = string
+  description = "Prefix for naming resources"  
 }

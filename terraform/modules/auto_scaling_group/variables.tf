@@ -35,3 +35,13 @@ variable "alb_dns" {
   type        = string
   description = "Load Balancer DNS"
 }
+
+variable "efs_id" {
+  type        = string
+  description = "Elastic File System id"
+}
+
+variable "prefix" {
+  type        = string
+  description = "Prefix for naming resources"  
+}
