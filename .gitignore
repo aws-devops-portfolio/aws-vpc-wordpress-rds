@@ -23,4 +23,4 @@ crash.*.log
 terraformrc
 
 # Ignore hcl file
-.terraform.lock.hcl
+#.terraform.lock.hcl
