@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.92"
+      version = "~> 6.0"
     }
 
   }
@@ -13,8 +13,7 @@ terraform {
     bucket         = "devhub164-state-demo"
     key            = "s3-github-actions/wordpress.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "terraform-locks"
-    encrypt        = true
+    use_lockfile   = true    
   }
 }
 

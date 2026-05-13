@@ -1,7 +1,7 @@
 
 # Public ALB is required for Wordpress frontend access
 #tfsec:ignore:aws-elb-alb-not-public
-resource "aws_lb" "web_alb" {
+resource "aws_lb" "wp_alb" {
   name                       = "${var.prefix}-alb"
   load_balancer_type         = "application"
   security_groups            = [var.alb_sg_id]
@@ -59,7 +59,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 
 # Listeners
 resource "aws_lb_listener" "listener" {
-  load_balancer_arn = aws_lb.web_alb.arn
+  load_balancer_arn = aws_lb.wp_alb.arn
   port              = var.http_port
   protocol          = "HTTP"
   
@@ -75,7 +75,7 @@ resource "aws_lb_listener" "listener" {
 }
 
 resource "aws_lb_listener" "https_listener" {
-  load_balancer_arn = aws_lb.web_alb.arn
+  load_balancer_arn = aws_lb.wp_alb.arn
   port              = var.https_port
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
@@ -84,7 +84,7 @@ resource "aws_lb_listener" "https_listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.web_alb_tg.arn
+    target_group_arn = aws_lb_target_group.wp_alb_tg.arn
   }
 
   depends_on = [aws_acm_certificate_validation.cert_validation]
