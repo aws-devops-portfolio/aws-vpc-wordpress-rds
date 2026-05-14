@@ -9,14 +9,14 @@ on:
     branches:
       - main
       - develop
-    paths:
-      - 'terraform/**'
+  #  paths:
+  #    - 'terraform/**'
   pull_request:
     branches:
       - main
       - develop
-    paths:
-      - 'terraform/**'    
+  #  paths:
+  #    - 'terraform/**'    
 
 defaults:
   run:
