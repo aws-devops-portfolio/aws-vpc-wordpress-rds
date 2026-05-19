@@ -125,14 +125,3 @@ resource "aws_security_group_rule" "efs_sg_ingress_rule" {
   protocol                 = "tcp"
   to_port                  = var.efs_port
 }
-
-resource "aws_security_group_rule" "efs_sg_egress_rule" {
-  description       = "Allow EFS outbound traffic (via NAT)"
-  type              = "egress"
-  security_group_id = aws_security_group.efs_sg.id
-  cidr_blocks       = [var.all_traffic]
-  from_port         = 0
-  protocol          = "-1"
-  to_port           = 0
-}
-

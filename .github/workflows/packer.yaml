@@ -1,4 +1,4 @@
-name: Build WordPress AMI
+name: Packer AMI Build 
 
 permissions:
   id-token: write
@@ -11,6 +11,9 @@ on:
       - develop
   #  paths:
   #    - 'packer/**'
+  pull_request:
+    branches:
+      - develop
 
 defaults:
   run:

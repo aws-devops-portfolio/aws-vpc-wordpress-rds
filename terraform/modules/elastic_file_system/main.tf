@@ -1,5 +1,6 @@
 resource "aws_efs_file_system" "wp_efs" {
   creation_token = "${var.prefix}-efs"
+  encrypted      = true
 
   tags = {
     Name = "${var.prefix}-efs"

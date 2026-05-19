@@ -1,22 +1,26 @@
-name: Terraform CI/CD
+name: Terraform Infrastructure Deploy
 
 permissions:
   id-token: write
   contents: read
 
 on:
+  workflow_run:
+    workflows: ["Packer AMI Build"]
+    types:
+      - completed
   push:
     branches:
       - main
       - develop
-    paths:
-      - 'terraform/**'
+  #  paths:
+  #    - 'terraform/**'
   pull_request:
     branches:
       - main
       - develop
-    paths:
-      - 'terraform/**'    
+  #  paths:
+  #    - 'terraform/**'    
 
 defaults:
   run:
@@ -24,7 +28,8 @@ defaults:
 
 jobs:
   terraform:
-    name: 'Terraform Lint, Security Check, and Deploy'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: 'Terraform Deploy'
     runs-on: ubuntu-latest
 
     env:
@@ -48,9 +53,7 @@ jobs:
       run: aws sts get-caller-identity	  
 
     - name: 'Set up Terraform'
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: ${{ env.TF_VERSION }}
+      uses: hashicorp/setup-terraform@v3    
 
     - name: 'Install TFLint'
       run: |
@@ -86,6 +89,16 @@ jobs:
       run: terraform plan -input=false -lock=false -out=tfplan
       env:
         TF_LOG: TRACE
+
+    - name: Wait for AMI availability
+      run: |
+        AMI_ID=$(aws ssm get-parameter \
+        --name "/ami/wordpress/latest" \
+        --query "Parameter.Value" \
+        --output text)
+
+        aws ec2 wait image-available \
+        --image-ids $AMI_ID
 
     - name: 'Terraform Apply'
       if: github.ref == 'refs/heads/main'
