@@ -59,20 +59,29 @@ jobs:
           --query "Parameter.Value" \
           --output text 2>/dev/null || echo "")
 
-          if [ -n "$AMI_ID" ]; then
-            if aws ec2 describe-images \
-              --image-ids $AMI_ID \
-              --region us-east-1 >/dev/null 2>&1; then
-              echo "AMI exists"
-              echo "ami_exists=true" >> $GITHUB_OUTPUT
-            else
-              echo "AMI missing"
-              echo "ami_exists=false" >> $GITHUB_OUTPUT
-            fi
-          else
+          echo "Retrieved AMI_ID:$AMI_ID" 
+
+          if [ -z "$AMI_ID" ]; then
             echo "No AMI parameter found"
             echo "ami_exists=false" >> $GITHUB_OUTPUT
-          fi        
+            exit 0  
+          fi
+
+          IMAGE_COUNT=$(aws ec2 describe-images \
+            --region us-east-1 \
+            --image-ids "$AMI_ID" \
+            --query 'length(Images)' \
+            --output text 2>/dev/null || echo "0")
+
+          echo "Image count: $IMAGE_COUNT"
+
+          if [ "$IMAGE_COUNT" -eq 0 ]; then
+            echo "AMI does not exist"
+            echo "ami_exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "AMI exists"
+            echo "ami_exists=true" >> $GITHUB_OUTPUT
+          fi                 
 
       - name: Build AMI
         working-directory: packer
