@@ -13,8 +13,7 @@ terraform {
     bucket         = "devhub164-state-demo"
     key            = "s3-github-actions/wordpress.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "terraform-state-lock"
-    encrypt        = true   
+    use_lockfile   = true   
   }
 }
 
