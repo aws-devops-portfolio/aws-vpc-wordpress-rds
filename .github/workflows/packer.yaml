@@ -8,8 +8,9 @@ on:
   push:
     branches:
       - main      
-  #  paths:
-  #    - 'packer/**'
+    paths:
+      - 'packer/**'
+      - '.github/workflows/packer.yaml'
   pull_request:
     branches:
       - develop
@@ -50,8 +51,32 @@ jobs:
         with:
           version: "1.10.0"
 
+      - name: Check if AMI exists
+        id: check_ami
+        run: |
+          AMI_ID=$(aws ssm get-parameter \
+          --name "/ami/wordpress/latest" \
+          --query "Parameter.Value" \
+          --output text 2>/dev/null || echo "")
+
+          if [ -n "$AMI_ID" ]; then
+            if aws ec2 describe-images \
+              --image-ids $AMI_ID \
+              --region us-east-1 >/dev/null 2>&1; then
+              echo "AMI exists"
+              echo "ami_exists=true" >> $GITHUB_OUTPUT
+            else
+              echo "AMI missing"
+              echo "ami_exists=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No AMI parameter found"
+            echo "ami_exists=false" >> $GITHUB_OUTPUT
+          fi        
+
       - name: Build AMI
         working-directory: packer
+        if: steps.check_ami.outputs.ami_exists == 'false'
         run: |
           packer init .
           packer build .
