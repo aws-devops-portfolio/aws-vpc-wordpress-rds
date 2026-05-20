@@ -3,9 +3,9 @@ variable "efs_sg_id" {
   description = "EFS security group id"
 }
 
-variable "private_subnet_ids" {
+variable "efs_subnet_ids" {
   type        = list(string)
-  description = "List of private subnet ids"
+  description = "List of EFS subnet ids"
 }
 
 variable "prefix" {

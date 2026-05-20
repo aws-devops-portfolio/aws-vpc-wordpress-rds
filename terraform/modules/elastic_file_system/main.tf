@@ -8,7 +8,7 @@ resource "aws_efs_file_system" "wp_efs" {
 }
 
 resource "aws_efs_mount_target" "wp_efs_mount_target" {
-  for_each = toset(var.private_subnet_ids)
+  for_each = toset(var.efs_subnet_ids)
 
   file_system_id  = aws_efs_file_system.wp_efs.id
   subnet_id       = each.value

@@ -19,10 +19,10 @@ module "security_groups" {
 }
 
 module "elastic_file_system" {
-  source             = "./modules/elastic_file_system"
-  efs_sg_id          = module.security_groups.efs_sg_id
-  private_subnet_ids = module.networks.private_subnet_ids
-  prefix             = var.app_prefix
+  source         = "./modules/elastic_file_system"
+  efs_sg_id      = module.security_groups.efs_sg_id
+  efs_subnet_ids = module.networks.efs_subnet_ids
+  prefix         = var.app_prefix
 }
 
 
