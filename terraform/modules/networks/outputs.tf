@@ -9,3 +9,7 @@ output "private_subnet_ids" {
 output "public_subnet_ids" {
   value = aws_subnet.public-subnet[*].id
 }
+
+output "efs_subnet_ids" {
+  value = local.efs_subnet_ids
+}

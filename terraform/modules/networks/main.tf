@@ -56,6 +56,20 @@ resource "aws_subnet" "private-subnet" {
   }
 }
 
+locals {
+  efs_subnets_by_az = {
+    for subnet in aws_subnet.private-subnet :
+    subnet.availability_zone => subnet.id...
+  }
+}
+
+locals {
+  efs_subnet_ids = [
+    for az, subnet_ids in local.efs_subnets_by_az :
+    subnet_ids[0]
+  ]
+}
+
 # Elastic IP Address
 resource "aws_eip" "eip" {
   domain = "vpc"
