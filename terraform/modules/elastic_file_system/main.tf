@@ -8,8 +8,9 @@ resource "aws_efs_file_system" "wp_efs" {
 }
 
 resource "aws_efs_mount_target" "wp_efs_mount_target" {
-  count           = length(var.private_subnet_ids)
+  for_each = toset(var.private_subnet_ids)
+
   file_system_id  = aws_efs_file_system.wp_efs.id
-  subnet_id       = var.private_subnet_ids[count.index]
+  subnet_id       = each.value
   security_groups = [var.efs_sg_id] 
 }

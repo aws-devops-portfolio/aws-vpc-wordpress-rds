@@ -30,6 +30,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
+# Autoscaling Group and Launch Template
 resource "aws_launch_template" "wp_lt" {
   name_prefix   = "${var.prefix}-lt-"
   image_id      = var.ami_id

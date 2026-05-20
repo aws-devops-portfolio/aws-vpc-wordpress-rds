@@ -83,7 +83,7 @@ jobs:
             echo "ami_exists=true" >> $GITHUB_OUTPUT
           fi                 
 
-      - name: Build AMI
+      - name: Build the AMI
         working-directory: packer
         if: steps.check_ami.outputs.ami_exists == 'false'
         run: |
