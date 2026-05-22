@@ -10,6 +10,7 @@ on:
       - main      
     paths:
       - 'packer/**'
+      - 'terraform/scripts/**'
       - '.github/workflows/packer.yaml'
   pull_request:
     branches:
