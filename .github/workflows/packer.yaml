@@ -9,7 +9,7 @@ on:
     branches:
       - main      
     paths:
-      - 'packer/**'
+    #  - 'packer/**'
       - 'terraform/scripts/**'
       - '.github/workflows/packer.yaml'
   pull_request:
