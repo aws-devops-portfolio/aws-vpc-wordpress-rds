@@ -87,9 +87,7 @@ jobs:
       run: tfsec .
 
     - name: 'Terraform Plan'
-      run: terraform plan -input=false -lock=false -out=tfplan
-      env:
-        TF_LOG: TRACE
+      run: terraform plan -input=false -out=tfplan      
 
     - name: Wait for AMI availability
       run: |
