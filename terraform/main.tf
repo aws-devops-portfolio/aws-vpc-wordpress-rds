@@ -21,7 +21,10 @@ module "security_groups" {
 module "elastic_file_system" {
   source         = "./modules/elastic_file_system"
   efs_sg_id      = module.security_groups.efs_sg_id
-  efs_subnet_ids = module.networks.efs_subnet_ids
+  efs_subnet_map = {
+    subnet1 = module.networks.efs_subnet_ids[0]
+    subnet2 = module.networks.efs_subnet_ids[1]
+  }
   prefix         = var.app_prefix
 }
 

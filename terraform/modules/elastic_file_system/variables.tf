@@ -3,9 +3,9 @@ variable "efs_sg_id" {
   description = "EFS security group id"
 }
 
-variable "efs_subnet_ids" {
-  type        = list(string)
-  description = "List of EFS subnet ids"
+variable "efs_subnet_map" {
+  type        = map(string)
+  description = "Map of EFS subnet ids"
 }
 
 variable "prefix" {
