@@ -4,9 +4,9 @@ set -euxo pipefail
 # Install dependencies
 if command -v apt-get >/dev/null 2>&1; then
   apt-get update -y
-  apt-get install -y unzip curl jq php-mysql amazon-efs-utils
+  apt-get install -y unzip curl jq php-mysql 
 elif command -v yum >/dev/null 2>&1; then
-  yum install -y unzip curl jq php-mysqlnd amazon-efs-utils
+  yum install -y unzip curl jq php-mysqlnd
 else
   echo "Unsupported OS"
   exit 1

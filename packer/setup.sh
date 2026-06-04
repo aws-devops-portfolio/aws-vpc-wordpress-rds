@@ -22,13 +22,15 @@ cat /etc/apt/sources.list
 ls /etc/apt/sources.list.d || true
 
 # Ensure universe repo is enabled
+apt-get update -y
 apt-get install -y software-properties-common
 add-apt-repository universe
 apt-get update -y
 
+apt-get install -y amazon-efs-utils
+
 # Install Apache + PHP (Jammy defaults)
 apt-get install -y \
-  software-properties-common \
   apache2 \
   php \
   php-mysql \
