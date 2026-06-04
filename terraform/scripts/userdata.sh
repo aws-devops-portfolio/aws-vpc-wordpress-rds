@@ -18,12 +18,12 @@ DB_HOST="${DB_HOST}"
 DB_NAME="${DB_NAME}"
 EFS_ID="${EFS_ID}"
 
-: "$${DB_SECRET_ARN:?DB_SECRET_ARN is required}"
-: "$${DB_HOST:?DB_HOST is required}"
-: "$${DB_NAME:?DB_NAME is required}"
-: "$${EFS_ID:?EFS_ID is required}"
+if [ -z "$${DB_SECRET_ARN}" ] || [ -z "$${DB_HOST}" ] || [ -z "$${DB_NAME}" ] || [ -z "$${EFS_ID}" ]; then
+  echo "Missing required variables"
+  exit 1
+fi
 
-# Strip port from DB_HOST (WordPress does NOT want it)
+# Strip port from DB_HOST 
 DB_HOST_CLEAN="$${DB_HOST%%:*}"
 
 # Install AWS CLI v2 if missing
@@ -36,9 +36,9 @@ fi
 
 # Fetch DB credentials from Secrets Manager
 DB_SECRET_JSON=$(aws secretsmanager get-secret-value \
-  --secret-id "${DB_SECRET_ARN}" \
+  --secret-id "$${DB_SECRET_ARN}" \
   --query SecretString \
-  --output text)
+  --output text) 
 
 DB_USER=$(echo "$DB_SECRET_JSON" | jq -r '.username')
 DB_PASSWORD=$(echo "$DB_SECRET_JSON" | jq -r '.password')
@@ -50,38 +50,43 @@ cd "$WP_DIR"
 
 # Create wp-config.php if missing
 if [ ! -f wp-config.php ]; then
-  cp wp-config-sample.php wp-config.php
+  cp -f wp-config-sample.php wp-config.php
 fi
 
-# Database configuration
 cat > wp-config.php <<EOF
-define('DB_NAME', '${DB_NAME}');
-define('DB_USER', '${DB_USER}');
-define('DB_PASSWORD', '${DB_PASSWORD}');
-define('DB_HOST', '${DB_HOST_CLEAN}');
-EOF
+<?php
 
-/* WordPress domain configuration */
-define('WP_HOME','https://wordpress.mike71techsolutions.com');
-define('WP_SITEURL','https://wordpress.mike71techsolutions.com');
+define('DB_NAME', '$${DB_NAME}');
+define('DB_USER', '$${DB_USER}');
+define('DB_PASSWORD', '$${DB_PASSWORD}');
+define('DB_HOST', '$${DB_HOST_CLEAN}');
+define('DB_CHARSET', 'utf8mb4');
+
+define('WP_HOME', 'https://wordpress.mike71techsolutions.com');
+define('WP_SITEURL', 'https://wordpress.mike71techsolutions.com');
 
 /* HTTPS handling behind ALB */
-\$_SERVER['HTTPS'] = 'on';
-
-if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) &&
-    \$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+if (
+    isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    \$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'
+) {
     \$_SERVER['HTTPS'] = 'on';
 }
+
 EOF
 
 # Mount EFS
 mkdir -p /mnt/efs
-mount -t efs "${EFS_ID}:/ /mnt/efs"
-echo "${EFS_ID}:/ /mnt/efs efs defaults,_netdev 0 0" >> /etc/fstab
+mount -t efs -o tls "${EFS_ID}:/" /mnt/efs || {
+  echo "EFS mount failed"
+  exit 1
+}
+
+echo "${EFS_ID}:/ /mnt/efs efs tls,_netdev 0 0" >> /etc/fstab
 
 # Ensure correct permissions
-chown www-data:www-data wp-config.php
-chmod 640 wp-config.php
+chown -R www-data:www-data /var/www/html
+chmod 644 wp-config.php
 
 # Restart Apache to be safe
 systemctl restart apache2
