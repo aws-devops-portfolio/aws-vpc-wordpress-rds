@@ -61,6 +61,9 @@ define('DB_USER', '$${DB_USER}');
 define('DB_PASSWORD', '$${DB_PASSWORD}');
 define('DB_HOST', '$${DB_HOST_CLEAN}');
 define('DB_CHARSET', 'utf8mb4');
+define('DB_COLLATE', '');
+
+\$table_prefix = 'wp_';
 
 define('WP_HOME', 'https://wordpress.mike71techsolutions.com');
 define('WP_SITEURL', 'https://wordpress.mike71techsolutions.com');
@@ -72,6 +75,14 @@ if (
 ) {
     \$_SERVER['HTTPS'] = 'on';
 }
+
+/* Absolute path */
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
+
+/* WordPress core loader */
+require_once ABSPATH . 'wp-settings.php';
 
 EOF
 
