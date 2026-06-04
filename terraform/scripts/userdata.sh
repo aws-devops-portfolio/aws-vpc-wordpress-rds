@@ -53,16 +53,13 @@ if [ ! -f wp-config.php ]; then
   cp wp-config-sample.php wp-config.php
 fi
 
-# Replace DB settings (idempotent — no duplicates ever)
-sed -i \
-  -e "s/database_name_here/$${DB_NAME}/" \
-  -e "s/username_here/$${DB_USER}/" \
-  -e "s/password_here/$${DB_PASSWORD}/" \
-  -e "s/localhost/$${DB_HOST_CLEAN}/" \
-  WP_CONFIG
-  
-# Add WordPress domain configuration
-cat <<EOF >> $WP_CONFIG
+# Database configuration
+cat > wp-config.php <<EOF
+define('DB_NAME', '${DB_NAME}');
+define('DB_USER', '${DB_USER}');
+define('DB_PASSWORD', '${DB_PASSWORD}');
+define('DB_HOST', '${DB_HOST_CLEAN}');
+EOF
 
 /* WordPress domain configuration */
 define('WP_HOME','https://wordpress.mike71techsolutions.com');
