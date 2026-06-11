@@ -153,7 +153,7 @@ ACM Certificate enables the custom Domain Name HTTPS security
 
 Route 53 record created for sub-domain name
 
-![alt text](<images/certificate.png>)
+![alt text](<images/route_53_record.png>)
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **Elastic File System**
