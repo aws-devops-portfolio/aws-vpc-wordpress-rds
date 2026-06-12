@@ -37,16 +37,19 @@ The GitHub Actions pipeline automates both image building and infrastructure pro
 Workflow process:
 
 1. Developer pushes code to `develop` or `main`
-2. GitHub Actions authenticates to AWS using OIDC
-3. Packer workflow builds the image if there's no image existing or the image script has been updated
-4. Terraform workflow provisions or updates AWS infrastructure once the Packer workflow has completed or there's infrastructure change
+2. GitHub Actions uses OpenID Connect (OIDC) to securely authenticate with AWS without long-lived credentials.
+3. Packer is used to build the image none is existing or the image script has been updated.
+4. The generated AMI ID is stored in AWS Systems Manager Parameter Store.
+5. Terraform retrieves the latest approved AMI ID from Parameter Store during deployment.
+6. Terraform workflow provisions or updates AWS infrastructure once the Packer workflow has completed or there's infrastructure change
 
 
 ## LEARNING OUTCOMES
 - Designed a highly available, secure VPC  
-- Automated ALB, Autoscaling Group, EC2, EFS, RDS provisioning  
+- Automated ALB, Autoscaling Group, Security Groups, EC2, EFS, RDS provisioning  
 - Configured WordPress with RDS backend
 - Created a customized machine image using Packer
+- Learnt to retrieve the secrets from AWS Secrets Manager using bash script
 - Integrated AWS OIDC Authentication with Github actions
 
 ## Provisioned resources
