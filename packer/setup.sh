@@ -27,8 +27,6 @@ apt-get install -y software-properties-common
 add-apt-repository universe
 apt-get update -y
 
-apt-get install -y amazon-efs-utils
-
 # Install Apache + PHP (Jammy defaults)
 apt-get install -y \
   apache2 \
